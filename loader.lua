@@ -29,40 +29,47 @@ local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("Pla
 gui.Name = "0xiansFDLibrary"
 
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 450, 0, 600)
-frame.Position = UDim2.new(0.5, -225, 0.5, -300)
+frame.Size = UDim2.new(0, 500, 0, 650)
+frame.Position = UDim2.new(0.5, -250, 0.5, -325)
 frame.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
+frame.ClipsDescendants = true
+
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 12)
 
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 50)
+title.Size = UDim2.new(1, 0, 0, 60)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.Text = "0xian's FD Library"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 26
+title.TextSize = 28
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
+title.TextStrokeTransparency = 0.8
+title.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 
 local discord = Instance.new("TextLabel", frame)
 discord.Size = UDim2.new(1, 0, 0, 30)
-discord.Position = UDim2.new(0, 0, 0, 50)
+discord.Position = UDim2.new(0, 0, 0, 60)
 discord.Text = "Discord: discord.gg/TNRDA3Fz8S"
 discord.Font = Enum.Font.Gotham
-discord.TextSize = 18
+discord.TextSize = 20
 discord.TextColor3 = Color3.fromRGB(200, 200, 255)
 discord.BackgroundTransparency = 1
 
 local scrollingFrame = Instance.new("ScrollingFrame", frame)
-scrollingFrame.Size = UDim2.new(1, -20, 0, 480)
+scrollingFrame.Size = UDim2.new(1, -20, 0, 500)
 scrollingFrame.Position = UDim2.new(0, 10, 0, 90)
-scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 100)
+scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, #scripts * 50)
 scrollingFrame.ScrollBarThickness = 8
 scrollingFrame.BackgroundTransparency = 1
 
 local layout = Instance.new("UIListLayout", scrollingFrame)
 layout.Padding = UDim.new(0, 10)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
 
 local function createButton(name, file)
     local btn = Instance.new("TextButton")
@@ -73,7 +80,12 @@ local function createButton(name, file)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.Gotham
     btn.TextSize = 18
+    btn.TextStrokeTransparency = 0.8
+    btn.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
     btn.Parent = scrollingFrame
+
+    local buttonCorner = Instance.new("UICorner", btn)
+    buttonCorner.CornerRadius = UDim.new(0, 6)
 
     btn.MouseButton1Click:Connect(function()
         local url = baseUrl .. file
