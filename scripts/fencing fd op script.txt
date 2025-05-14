@@ -1,0 +1,30 @@
+-- RC7 Compatible Script (For Filtering Disabled games)
+local player = game.Players.LocalPlayer -- This works because Filtering is Disabled
+
+if player then
+    -- Create leaderstats if they don't exist
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if not leaderstats then
+        leaderstats = Instance.new("Folder")
+        leaderstats.Name = "leaderstats"
+        leaderstats.Parent = player
+    end
+
+    -- Change or create "KOs" stat
+    local KOs = leaderstats:FindFirstChild("KOs")
+    if not KOs then
+        KOs = Instance.new("IntValue") -- Use IntValue for numbers
+        KOs.Name = "KOs"
+        KOs.Parent = leaderstats
+    end
+    KOs.Value = 2147483642 -- Set KOs to maximum possible value
+
+    -- Change or create "Wipeouts" stat
+    local Wipeouts = leaderstats:FindFirstChild("Wipeouts")
+    if not Wipeouts then
+        Wipeouts = Instance.new("IntValue") -- Use IntValue for numbers
+        Wipeouts.Name = "Wipeouts"
+        Wipeouts.Parent = leaderstats
+    end
+    Wipeouts.Value = 2147483642 -- Set Wipeouts to maximum possible value
+end

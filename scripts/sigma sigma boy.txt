@@ -1,0 +1,36 @@
+-- Place this script inside StarterPlayer -> StarterCharacterScripts
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local head = character:WaitForChild("Head") -- Get the head of the character to position the orb relative to
+
+-- Create a floating orb (a part that follows the player)
+local orb = Instance.new("Part")
+orb.Shape = Enum.PartType.Ball
+orb.Size = Vector3.new(2, 2, 2)  -- Size of the orb
+orb.Position = head.Position + Vector3.new(0, 5, 0)  -- Position it above the player's head
+orb.Anchored = false  -- Let it move freely
+orb.CanCollide = false  -- No collision with other objects
+orb.Color = Color3.fromRGB(0, 255, 255)  -- A nice cyan color
+orb.Material = Enum.Material.SmoothPlastic
+orb.Parent = game.Workspace
+
+-- Create a light trail effect behind the orb
+local trail = Instance.new("Trail")
+trail.Parent = orb
+trail.Attachment0 = orb:FindFirstChild("Attachment") or Instance.new("Attachment", orb)
+trail.Lifetime = 0.5
+trail.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255))  -- Match the orb color
+trail.WidthScale = NumberSequence.new(0.2, 0.5)
+
+-- Function to make the orb follow the player smoothly
+local function followPlayer()
+    while true do
+        -- Move the orb slightly above and around the player
+        orb.CFrame = CFrame.new(head.Position + Vector3.new(0, 5, 0))
+        wait(0.1)  -- Adjust how fast the orb follows
+    end
+end
+
+-- Start following the player
+followPlayer()

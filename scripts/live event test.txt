@@ -1,0 +1,165 @@
+-- Bigger and Better Live Event for 2016L Revival
+local workspace = game.Workspace
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local camera = game.Workspace.CurrentCamera
+
+-- Function to create a massive explosion effect
+local function createExplosion(position)
+    local explosion = Instance.new("Explosion")
+    explosion.Position = position
+    explosion.BlastRadius = 50
+    explosion.BlastPressure = 100000
+    explosion.Parent = workspace
+
+    -- Create ground shaking effects
+    local shake = Instance.new("BodyPosition")
+    shake.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+    shake.Position = position + Vector3.new(math.random(-5, 5), 0, math.random(-5, 5))
+    shake.Parent = humanoidRootPart
+    game:GetService("Debris"):AddItem(shake, 0.5)
+end
+
+-- Function to spawn meteor showers (massive falling objects)
+local function spawnMeteorShower()
+    for i = 1, 10 do
+        local meteor = Instance.new("Part")
+        meteor.Size = Vector3.new(math.random(5, 15), math.random(5, 15), math.random(5, 15))
+        meteor.Material = Enum.Material.Metal
+        meteor.Color = Color3.fromRGB(math.random(200, 255), math.random(100, 255), math.random(50, 150))
+        meteor.Position = Vector3.new(math.random(-1000, 1000), 500, math.random(-1000, 1000))
+        meteor.Anchored = false
+        meteor.CanCollide = true
+        meteor.Parent = workspace
+
+        -- Fall with increasing speed
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = Vector3.new(0, -math.random(50, 100), 0)
+        bodyVelocity.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+        bodyVelocity.Parent = meteor
+        
+        -- Add explosive hit effect
+        meteor.Touched:Connect(function(hit)
+            if hit and hit:IsA("BasePart") then
+                createExplosion(hit.Position)
+            end
+        end)
+
+        -- Destroy meteor after hit
+        game:GetService("Debris"):AddItem(meteor, 5)
+        wait(0.5)
+    end
+end
+
+-- Function to simulate lightning strikes
+local function createLightningStrike()
+    local strike = Instance.new("Part")
+    strike.Size = Vector3.new(1, math.random(100, 300), 1)
+    strike.Position = Vector3.new(math.random(-1000, 1000), math.random(200, 500), math.random(-1000, 1000))
+    strike.Material = Enum.Material.Neon
+    strike.Color = Color3.fromRGB(255, 255, 255)
+    strike.Anchored = true
+    strike.Parent = workspace
+
+    -- Flash effect and sound
+    local light = Instance.new("PointLight")
+    light.Brightness = 10
+    light.Range = 20
+    light.Parent = strike
+
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://288591804"
+    sound.Volume = 10
+    sound.Parent = strike
+    sound:Play()
+
+    -- Remove lightning after a while
+    game:GetService("Debris"):AddItem(strike, 0.5)
+end
+
+-- Function to create a black hole that distorts objects
+local function createBlackHole(position)
+    local blackHole = Instance.new("Part")
+    blackHole.Size = Vector3.new(30, 30, 30)
+    blackHole.Shape = Enum.PartType.Ball
+    blackHole.Anchored = true
+    blackHole.Material = Enum.Material.Neon
+    blackHole.Color = Color3.fromRGB(0, 0, 0)
+    blackHole.Position = position
+    blackHole.Parent = workspace
+
+    -- Pulling objects toward the black hole
+    spawn(function()
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and not obj.Anchored then
+                spawn(function()
+                    for i = 1, 30 do
+                        if obj.Parent then
+                            local direction = (blackHole.Position - obj.Position).unit
+                            obj.Position = obj.Position + direction * 5
+                            obj.Velocity = direction * 50
+                        end
+                        wait(0.1)
+                    end
+                end)
+            end
+        end
+        wait(5)
+        blackHole:Destroy()
+    end)
+end
+
+-- Function to play event sound effects
+local function playEventSound()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://2937883470" -- Dramatic event music
+    sound.Volume = 5
+    sound.Looped = true
+    sound.Parent = workspace
+    sound:Play()
+
+    game:GetService("Debris"):AddItem(sound, 10)
+end
+
+-- Main Event Function
+local function startEpicLiveEvent()
+    -- Play dramatic background music
+    playEventSound()
+
+    -- Flashing lights effect
+    for i = 1, 5 do
+        local flash = Instance.new("Part")
+        flash.Size = Vector3.new(200, 1, 200)
+        flash.Anchored = true
+        flash.CanCollide = false
+        flash.Material = Enum.Material.Neon
+        flash.Color = Color3.fromRGB(255, 255, math.random(50, 255))
+        flash.Position = Vector3.new(0, 50, 0)
+        flash.Parent = workspace
+
+        game:GetService("Debris"):AddItem(flash, 0.5)
+        wait(0.1)
+    end
+
+    -- Start explosions
+    for i = 1, 5 do
+        createExplosion(Vector3.new(math.random(-500, 500), 10, math.random(-500, 500)))
+        wait(0.5)
+    end
+
+    -- Meteor Shower
+    spawnMeteorShower()
+
+    -- Lightning Strikes
+    for i = 1, 5 do
+        createLightningStrike()
+        wait(1)
+    end
+
+    -- Black Hole Finale
+    createBlackHole(Vector3.new(0, 50, 0))
+end
+
+-- Trigger the event
+startEpicLiveEvent()

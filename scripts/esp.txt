@@ -1,0 +1,80 @@
+-- Enhanced ESP Script for Filtering Disabled Games
+
+-- Ensure LocalPlayer exists
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+-- Table to store active ESPs
+local activeESPs = {}
+
+-- Function to calculate distance between players
+local function getDistanceFromPlayer(targetPlayer)
+    local targetHRP = targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+    local myHRP = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+    if targetHRP and myHRP then
+        return (targetHRP.Position - myHRP.Position).Magnitude
+    end
+    return math.huge -- Return a huge number if something is missing
+end
+
+-- Function to create ESP for a player
+local function createESP(targetPlayer)
+    if targetPlayer ~= player and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        -- Check if ESP already exists
+        if activeESPs[targetPlayer] then return end
+
+        -- Create the BillboardGui
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "ESP"
+        billboard.Adornee = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+        billboard.Size = UDim2.new(0, 100, 0, 50) -- Adjust size
+        billboard.StudsOffset = Vector3.new(0, 3, 0) -- Adjust height
+        billboard.AlwaysOnTop = true
+
+        -- Create the TextLabel
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextColor3 = Color3.fromRGB(255, 0, 0) -- Red color for ESP
+        textLabel.TextScaled = true
+        textLabel.Font = Enum.Font.SourceSansBold
+        textLabel.Parent = billboard
+
+        -- Parent the BillboardGui to the player's character
+        billboard.Parent = targetPlayer.Character
+
+        -- Store the ESP
+        activeESPs[targetPlayer] = { billboard = billboard, textLabel = textLabel }
+    end
+end
+
+-- Function to update all ESPs
+local function updateESPs()
+    for _, targetPlayer in pairs(game.Players:GetPlayers()) do
+        if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            -- Create ESP if it doesn't exist
+            createESP(targetPlayer)
+
+            -- Update the distance text
+            if activeESPs[targetPlayer] then
+                local distance = math.floor(getDistanceFromPlayer(targetPlayer))
+                activeESPs[targetPlayer].textLabel.Text = targetPlayer.Name .. " | " .. tostring(distance) .. " studs"
+            end
+        end
+    end
+
+    -- Remove ESP for players who left
+    for trackedPlayer, espData in pairs(activeESPs) do
+        if not game.Players:FindFirstChild(trackedPlayer.Name) then
+            espData.billboard:Destroy()
+            activeESPs[trackedPlayer] = nil
+        end
+    end
+end
+
+-- Update ESPs every second
+while true do
+    updateESPs()
+    wait(1) -- Reload every second
+end

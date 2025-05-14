@@ -1,0 +1,85 @@
+-- Building Tools Script (Only Rotate Tool and Part Creation Tool)
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- Helper function to create parts at mouse position
+local function createPart(size, position, color)
+    local newPart = Instance.new("Part")
+    newPart.Size = size
+    newPart.Position = position
+    newPart.Color = color
+    newPart.Anchored = true
+    newPart.CanCollide = true
+    newPart.Parent = workspace
+    return newPart
+end
+
+-- Tool to rotate parts
+local function createRotateTool()
+    local rotateTool = Instance.new("Tool")
+    rotateTool.Name = "RotateTool"
+    rotateTool.RequiresHandle = true
+    rotateTool.Parent = player.Backpack
+
+    -- Create the handle for the rotate tool
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 1)
+    handle.Anchored = true
+    handle.CanCollide = false
+    handle.Parent = rotateTool
+
+    -- Rotate parts when tool is activated
+    rotateTool.Activated:Connect(function()
+        local target = mouse.Target
+        if target and target:IsA("BasePart") then
+            -- Rotate the part 45 degrees on the Y-axis
+            target.CFrame = target.CFrame * CFrame.Angles(0, math.rad(45), 0)
+        end
+    end)
+end
+
+-- Tool to create new parts
+local function createPartTool()
+    local partTool = Instance.new("Tool")
+    partTool.Name = "PartTool"
+    partTool.RequiresHandle = true
+    partTool.Parent = player.Backpack
+
+    -- Create the handle for the part creation tool
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 1)
+    handle.Anchored = true
+    handle.CanCollide = false
+    handle.Parent = partTool
+
+    -- Create a part when the tool is activated
+    partTool.Activated:Connect(function()
+        local newPart = createPart(Vector3.new(4, 1, 4), mouse.Hit.p, Color3.fromRGB(0, 255, 0))
+        -- Optionally set a material and other properties
+        newPart.Material = Enum.Material.SmoothPlastic
+    end)
+end
+
+-- Function to allow movement while using tools
+local function enableMovementWhileUsingTools()
+    -- Allow movement while using tools (not locking the player)
+    local toolList = {createRotateTool, createPartTool}
+
+    -- Loop through each tool function to activate them
+    for _, toolFunction in pairs(toolList) do
+        local tool = toolFunction()
+        tool.Enabled = true
+    end
+end
+
+-- Main function to give the player the rotate and part creation tools
+local function giveBuildingTools()
+    createRotateTool()
+    createPartTool()
+    enableMovementWhileUsingTools()
+end
+
+-- Give the player the tools
+giveBuildingTools()

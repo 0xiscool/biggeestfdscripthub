@@ -1,0 +1,32 @@
+-- Leaderboard Spammer for 2016L Revival (Spams continuously)
+local function spamLeaderboards()
+    -- Infinite loop to keep spamming
+    while true do
+        for _, player in pairs(game.Players:GetPlayers()) do
+            -- Create leaderstats folder if not exist
+            local leaderstats = player:FindFirstChild("leaderstats")
+            if not leaderstats then
+                leaderstats = Instance.new("Folder")
+                leaderstats.Name = "leaderstats"
+                leaderstats.Parent = player
+            end
+
+            -- Create or get the "NeonyLeaderboard" StringValue and set to spam text
+            local neonyLeaderboard = leaderstats:FindFirstChild("NeonyLeaderboard")
+            if not neonyLeaderboard then
+                neonyLeaderboard = Instance.new("StringValue")
+                neonyLeaderboard.Name = "NeonyLeaderboard"
+                neonyLeaderboard.Parent = leaderstats
+            end
+
+            -- Spam the "Neony Leaderboard" text
+            neonyLeaderboard.Value = "Neony Leaderboard"
+        end
+        
+        -- Spam the leaderboards rapidly every 0.1 seconds
+        wait(0.1)
+    end
+end
+
+-- Start the spam function for the leaderboards
+spamLeaderboards()

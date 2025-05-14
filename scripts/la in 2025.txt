@@ -1,0 +1,15 @@
+-- RC7 Compatible Script: Set Every Model on Fire
+for _, v in pairs(game.Workspace:GetDescendants()) do
+    if v:IsA("Model") and not v:FindFirstChildOfClass("Fire") then
+        for _, part in pairs(v:GetDescendants()) do
+            if part:IsA("BasePart") then
+                local fire = Instance.new("Fire")
+                fire.Size = 10 -- Adjust size as needed
+                fire.Heat = 10 -- Adjust heat as needed
+                fire.Parent = part
+            end
+        end
+    end
+end
+
+print("All models are now on fire!")
